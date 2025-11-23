@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dostępne rowery</h1>
+<div class="row">
+  {% for b in bikes %}
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ b['model'] }}</h5>
+          <p class="card-text">{{ b['description'] }}</p>
+          <p class="card-text"><strong>{{ b['price_per_day'] }} PLN / dzień</strong></p>
+          <a href="{{ url_for('bike_detail', bike_id=b['id']) }}" class="btn btn-primary">Szczegóły</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
