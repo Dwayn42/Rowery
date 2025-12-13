@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formularz Wypożyczenia</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { max-width: 500px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #007bff; margin-top: 0; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; margin-top: 20px; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .info { background: #e9ecef; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Rezerwacja Roweru</h2>
+
+    <div class="info">
+        Wybrany model: <strong th:text="${rower.model}">Model</strong><br>
+        Cena: <span th:text="${rower.cenaZaGodzine}">0</span> PLN / h
+    </div>
+
+    <form action="/potwierdz" method="post">
+        <input type="hidden" name="idRoweru" th:value="${rower.id}"/>
+
+        <h3>1. Twoje dane</h3>
+        <label>Imię i Nazwisko:</label>
+        <input type="text" th:field="${klient.imie}" placeholder="Jan Kowalski" required/>
+
+        <label>Adres Email:</label>
+        <input type="email" th:field="${klient.email}" placeholder="jan@example.com" required/>
+
+        <h3>2. Termin wypożyczenia</h3>
+        <label>Data od:</label>
+        <input type="date" th:field="${rezerwacja.dataOd}" required/>
+
+        <label>Data do:</label>
+        <input type="date" th:field="${rezerwacja.dataDo}" required/>
+
+        <button type="submit">Potwierdź rezerwację</button>
+    </form>
+</div>
+
+</body>
+</html>
