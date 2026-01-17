@@ -25,7 +25,7 @@ public class RowerController {
     @Autowired
     private WypozyczalniaService service;
 
-    // To uruchomi się raz przy starcie aplikacji i doda rowery
+    //dodanie rowerów na start
     @EventListener(ApplicationReadyEvent.class)
     public void dodajDaneStartowe() {
         if (rowerRepository.count() == 0) {
@@ -36,14 +36,14 @@ public class RowerController {
         }
     }
 
-    // F2: Strona główna z listą
+    // F2: Przegląd listy dostępnych rowerów
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("listaRowerow", rowerRepository.findByStatus("DOSTEPNY"));
         return "index";
     }
 
-    // F4: Formularz wypożyczenia
+    // F4: Formularz wypożyczenia roweru
     @GetMapping("/wypozycz/{id}")
     public String formularz(@PathVariable Long id, Model model) {
         Rower rower = rowerRepository.findById(id).get();
@@ -53,7 +53,7 @@ public class RowerController {
         return "formularz";
     }
 
-    // F3: Zatwierdzenie formularza
+    // F3: Zatwierdzenie wypożyczenia
     @PostMapping("/potwierdz")
     public String potwierdz(Uzytkownik klient, Rezerwacja rezerwacja, Long idRoweru) {
         service.utworzRezerwacje(idRoweru, klient, rezerwacja.getDataOd(), rezerwacja.getDataDo());

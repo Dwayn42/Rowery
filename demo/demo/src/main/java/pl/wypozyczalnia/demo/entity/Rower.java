@@ -10,13 +10,12 @@ public class Rower {
     private Long id;
 
     private String model;
-    private String status;      // np. "DOSTEPNY", "WYPOZYCZONY"
+    private String status;
     private String lokalizacja;
     private double cenaZaGodzine;
-    @Lob // Adnotacja mówiąca, że to może być długi tekst
+    @Lob
     private String zdjecie;
 
-    // Gettery i Settery
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getModel() { return model; }

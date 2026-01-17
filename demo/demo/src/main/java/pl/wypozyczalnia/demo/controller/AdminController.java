@@ -21,7 +21,7 @@ public class AdminController {
     @Autowired
     private RowerRepository rowerRepository;
 
-    // --- LOGOWANIE ---
+    // panel logowania
 
     @GetMapping("/login")
     public String formularzLogowania() {
@@ -45,28 +45,24 @@ public class AdminController {
         return "redirect:/";
     }
 
-    // --- PANEL ADMINA (DODAWANIE I EDYCJA) ---
+    // panel administratora
 
     @GetMapping("/admin")
     public String panelAdmina(Model model, HttpSession session,
                               @RequestParam(required = false) Long edytujId) {
 
-        // 1. Zabezpieczenie
         if (session.getAttribute("zalogowany") == null) {
             return "redirect:/login";
         }
 
-        // 2. Pobierz listę do tabeli
         model.addAttribute("wszystkieRowery", rowerRepository.findAll());
 
-        // 3. Logika formularza (Czy edytujemy, czy dodajemy?)
+        // wybieramy, czy edytujemy czy dodajemy nowy rower
         if (edytujId != null) {
-            // TRYB EDYCJI: Pobieramy rower z bazy
             Rower rowerDoEdycji = rowerRepository.findById(edytujId).orElse(new Rower());
             model.addAttribute("rowerForm", rowerDoEdycji);
             model.addAttribute("trybEdycji", true); // Flaga do HTML
         } else {
-            // TRYB DODAWANIA: Tworzymy czysty obiekt
             Rower nowyRower = new Rower();
             nowyRower.setStatus("DOSTEPNY"); // Domyślny status
             model.addAttribute("rowerForm", nowyRower);
@@ -76,7 +72,7 @@ public class AdminController {
         return "admin";
     }
 
-    // Jedna metoda do zapisu (obsługuje zarówno INSERT jak i UPDATE)
+    //zapisywanie roweru
     @PostMapping("/admin/zapisz")
     public String zapiszRower(Rower rowerForm,
                               @RequestParam("plik") MultipartFile plik,
@@ -86,32 +82,28 @@ public class AdminController {
             return "redirect:/login";
         }
 
-        // --- LOGIKA ZDJĘCIA PRZY EDYCJI ---
-        // Jeśli edytujemy (jest ID) i NIE wgrano nowego pliku -> zachowaj stare zdjęcie
+        //dodawanie zdjec za pomoca konwersji na base64
         if (rowerForm.getId() != null && plik.isEmpty()) {
             Rower staryRower = rowerRepository.findById(rowerForm.getId()).orElse(null);
             if (staryRower != null) {
                 rowerForm.setZdjecie(staryRower.getZdjecie());
             }
         }
-        // Jeśli wgrano nowy plik -> zamień na Base64
         else if (!plik.isEmpty()) {
             String encodedString = Base64.getEncoder().encodeToString(plik.getBytes());
             rowerForm.setZdjecie(encodedString);
         }
 
-        // Zabezpieczenie statusu (żeby nie był null przy nowym rowerze)
         if (rowerForm.getStatus() == null || rowerForm.getStatus().isEmpty()) {
             rowerForm.setStatus("DOSTEPNY");
         }
 
-        // save() w Spring Data działa sprytnie: jak jest ID to aktualizuje, jak nie ma to dodaje.
         rowerRepository.save(rowerForm);
 
         return "redirect:/admin";
     }
 
-    // Opcjonalne usuwanie
+    //usuwanie roweru
     @GetMapping("/admin/usun/{id}")
     public String usunRower(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("zalogowany") != null) {

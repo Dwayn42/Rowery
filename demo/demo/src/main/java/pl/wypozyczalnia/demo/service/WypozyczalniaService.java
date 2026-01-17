@@ -23,17 +23,14 @@ public class WypozyczalniaService {
     @Autowired
     private UzytkownikRepository uzytkownikRepository;
 
-    // F3 & F4: Logika tworzenia rezerwacji
+    // F3 & F4: Tworzenie rezerwacji
     public void utworzRezerwacje(Long idRoweru, Uzytkownik klient, LocalDate od, LocalDate doKiedy) {
-        // 1. Zapisujemy klienta w bazie
         uzytkownikRepository.save(klient);
 
-        // 2. Pobieramy rower i zmieniamy mu status
         Rower rower = rowerRepository.findById(idRoweru).orElseThrow();
         rower.setStatus("ZAREZERWOWANY");
         rowerRepository.save(rower);
 
-        // 3. Tworzymy rezerwację
         Rezerwacja rezerwacja = new Rezerwacja();
         rezerwacja.setRower(rower);
         rezerwacja.setUzytkownik(klient);
